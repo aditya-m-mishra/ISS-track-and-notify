@@ -2,6 +2,7 @@ import requests
 import os
 from dotenv import load_dotenv
 from datetime import datetime
+import smtplib
 
 load_dotenv()
 
@@ -44,3 +45,14 @@ def is_night():
     time_now = datetime.now().hour
     if time_now >= sunset or time_now <= sunrise:
         return True
+
+
+if is_iss_overhead() and is_night():
+    connection = smtplib.SMTP("smtp.gmail.com")
+    connection.starttls()
+    connection.login(MY_EMAIL, MY_PASSWORD)
+    connection.sendmail(
+        from_addr=MY_EMAIL,
+        to_addrs=MY_EMAIL,
+        msg="Subject:Space station position alert\n\nISS is located right above you currently and might be visible due to night darkness...have a look.",
+    )
